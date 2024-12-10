@@ -1,5 +1,5 @@
-import { Box, Typography, Card, CardContent, Avatar } from "@mui/material";
-import { User } from "@/app/ui/UsersCard";
+import { fetchUserById } from "@/app/data";
+import { Avatar, Box, Card, CardContent, Typography } from "@mui/material";
 
 interface Props {
   params: {
@@ -8,11 +8,7 @@ interface Props {
 }
 
 const UserPage = async ({ params }: Props) => {
-  const res = await fetch(
-    `https://jsonplaceholder.typicode.com/users/${params.id}`
-    
-  );
-  const user: User = await res.json();
+  const user = await fetchUserById(params.id);
 
   return (
     <Box
@@ -44,7 +40,7 @@ const UserPage = async ({ params }: Props) => {
               fontSize: "2rem",
             }}
           >
-            {user.name[0]}
+            {user.name}
           </Avatar>
           <Typography
             variant="h4"

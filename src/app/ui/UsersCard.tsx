@@ -1,16 +1,10 @@
 import { Box, Card, CardContent, Typography, Button } from "@mui/material";
 import Link from "next/link";
 import React from "react";
-
-export interface User {
-  id: number;
-  name: string;
-  email: string;
-}
+import { fetchUsers } from "../data";
 
 const UserCards = async () => {
-  const res = await fetch("https://jsonplaceholder.typicode.com/users");
-  const users: User[] = await res.json();
+  const users = await fetchUsers();
 
   return (
     <Box
