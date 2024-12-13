@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { User } from "../data";
 
@@ -10,7 +9,6 @@ const UserForm = () => {
     email: "",
     password: "",
   });
-  const router = useRouter();
 
   const handleData = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUser({ ...user, [e.target.name]: e.target.value });
@@ -20,12 +18,15 @@ const UserForm = () => {
     e.preventDefault();
 
     try {
-      await fetch("/api/users", {
+      const res = await fetch("/api/users", {
         method: "POST",
         body: JSON.stringify(user),
       });
-      alert("User Inserted Successfully.");
-      setTimeout(() => router.push("/"), 1500);
+
+      if (res.status === 201) {
+        setUser({ name: "", email: "", password: "" });
+        alert("User inserted successfully");
+      } else alert("This email has already taken");
     } catch (error) {
       alert("Error: Failed to create user");
     }
@@ -40,6 +41,7 @@ const UserForm = () => {
             required
             type="text"
             name="name"
+            value={user.name}
             onChange={(e) => handleData(e)}
           />
         </div>
@@ -49,6 +51,7 @@ const UserForm = () => {
             required
             type="email"
             name="email"
+            value={user.email}
             onChange={(e) => handleData(e)}
           />
         </div>
@@ -58,10 +61,13 @@ const UserForm = () => {
             required
             type="password"
             name="password"
+            value={user.password}
             onChange={(e) => handleData(e)}
           />
         </div>
-        <button type="submit">Submit</button>
+        <button type="submit" disabled={!user}>
+          Submit
+        </button>
       </form>
     </div>
   );

@@ -1,5 +1,6 @@
 import { User } from "@/app/data";
 import { db } from "@vercel/postgres";
+import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -9,6 +10,8 @@ export async function POST(req: NextRequest) {
   try {
     await client.sql`INSERT INTO users (name, email, password)
         VALUES (${body.name}, ${body.email}, ${body.password})`;
+
+    revalidatePath("/");
 
     return NextResponse.json(
       { message: "User Inserted", data: body },
