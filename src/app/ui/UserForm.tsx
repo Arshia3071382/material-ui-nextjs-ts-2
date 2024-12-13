@@ -1,6 +1,7 @@
 "use client";
 
-import React, { use, useState } from "react";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 import { User } from "../data";
 
 const UserForm = () => {
@@ -9,25 +10,25 @@ const UserForm = () => {
     email: "",
     password: "",
   });
+  const router = useRouter();
 
   const handleData = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
 
-  const onSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log(JSON.stringify(user));
-
-    // const res = await fetch("http://localhost:3000/api/users", {
-    //   method: "POST",
-    //   body: JSON.stringify(user),
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    // });
-
-    // console.log(res);
+    try {
+      await fetch("/api/users", {
+        method: "POST",
+        body: JSON.stringify(user),
+      });
+      alert("User Inserted Successfully.");
+      setTimeout(() => router.push("/"), 1500);
+    } catch (error) {
+      alert("Error: Failed to create user");
+    }
   };
 
   return (
