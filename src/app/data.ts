@@ -18,3 +18,5 @@ export const fetchUserById = async (id: string) => {
 
   return data.rows[0];
 };
+
+

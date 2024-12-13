@@ -7,6 +7,7 @@ import NextLink from 'next/link';
 import ProTip from '@/components/ProTip';
 import Copyright from '@/components/Copyright';
 import UserCards from './ui/UsersCard';
+import UserForm from './ui/UserForm';
 export default function Home() {
   return (
     <Container maxWidth="xl">
@@ -16,6 +17,7 @@ export default function Home() {
         p: 4,
         m:4,
       }}>
+        <UserForm />
        <UserCards/>
       </Box>
     </Container>
