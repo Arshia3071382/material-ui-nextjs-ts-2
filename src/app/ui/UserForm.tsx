@@ -1,10 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import { User } from "../data";
 
 const UserForm = () => {
-  const [user, setUser] = useState<User>({});
+  const [user, setUser] = useState<Omit<User, "id">>({
+    name: "",
+    email: "",
+    password: "",
+  });
 
   const handleData = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUser({ ...user, [e.target.name]: e.target.value });
@@ -13,15 +17,17 @@ const UserForm = () => {
   const onSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const res = await fetch("http://localhost:3000/api/users", {
-      method: "POST",
-      body: JSON.stringify(user),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    console.log(JSON.stringify(user));
 
-    console.log(res);
+    // const res = await fetch("http://localhost:3000/api/users", {
+    //   method: "POST",
+    //   body: JSON.stringify(user),
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    // });
+
+    // console.log(res);
   };
 
   return (
