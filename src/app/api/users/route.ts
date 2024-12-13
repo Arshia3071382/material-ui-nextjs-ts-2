@@ -1,19 +1,27 @@
 import { User } from "@/app/data";
-import { db, sql } from "@vercel/postgres";
+import { db } from "@vercel/postgres";
+import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
+  const body: Omit<User, "id"> = await req.json();
   const client = await db.connect();
-  const body: User = await req.json();
-
-  console.log(body);
 
   try {
-    const res = await client.sql`INSERT INTO users (name, email, password)
+    await client.sql`INSERT INTO users (name, email, password)
         VALUES (${body.name}, ${body.email}, ${body.password})`;
 
-    console.log(res);
+    revalidatePath("/");
 
-    return NextResponse.json({ message: "User Inserted" }, { status: 201 });
-  } catch (error) {}
+    return NextResponse.json(
+      { message: "User Inserted", data: body },
+      { status: 201 }
+    );
+  } catch (error) {
+    return NextResponse.json({ message: error }, { status: 500 });
+  }
+}
+
+export async function GET() {
+  return NextResponse.json({ message: "Hello" });
 }

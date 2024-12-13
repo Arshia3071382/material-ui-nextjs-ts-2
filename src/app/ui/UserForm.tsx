@@ -4,24 +4,32 @@ import React, { useState } from "react";
 import { User } from "../data";
 
 const UserForm = () => {
-  const [user, setUser] = useState<User>({});
+  const [user, setUser] = useState<Omit<User, "id">>({
+    name: "",
+    email: "",
+    password: "",
+  });
 
   const handleData = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
 
-  const onSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const res = await fetch("http://localhost:3000/api/users", {
-      method: "POST",
-      body: JSON.stringify(user),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    try {
+      const res = await fetch("/api/users", {
+        method: "POST",
+        body: JSON.stringify(user),
+      });
 
-    console.log(res);
+      if (res.status === 201) {
+        setUser({ name: "", email: "", password: "" });
+        alert("User inserted successfully");
+      } else alert("This email has already taken");
+    } catch (error) {
+      alert("Error: Failed to create user");
+    }
   };
 
   return (
@@ -33,6 +41,7 @@ const UserForm = () => {
             required
             type="text"
             name="name"
+            value={user.name}
             onChange={(e) => handleData(e)}
           />
         </div>
@@ -42,6 +51,7 @@ const UserForm = () => {
             required
             type="email"
             name="email"
+            value={user.email}
             onChange={(e) => handleData(e)}
           />
         </div>
@@ -51,10 +61,13 @@ const UserForm = () => {
             required
             type="password"
             name="password"
+            value={user.password}
             onChange={(e) => handleData(e)}
           />
         </div>
-        <button type="submit">Submit</button>
+        <button type="submit" disabled={!user}>
+          Submit
+        </button>
       </form>
     </div>
   );
